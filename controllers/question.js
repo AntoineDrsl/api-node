@@ -1,6 +1,5 @@
 const {dbConfig} = require('../knexfile');
 const knex = require('knex')(dbConfig.development);
-const Quizz = require('./quizz');
 
 class Question {
     static createQuestion(req, res) {
