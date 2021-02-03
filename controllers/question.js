@@ -11,7 +11,7 @@ class Question {
             error.push("Veuillez référencer un quizz");
         }
 
-        if(!req.body.question || req.body.question === 0) {
+        if(!req.body.question || req.body.question.length === 0) {
             error.push("Veuillez entrer une question valide");
         }
 
