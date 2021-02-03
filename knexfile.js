@@ -2,7 +2,7 @@
 
 const Path = require('path');
 
-module.exports = {
+module.exports.dbConfig = {
 
   development: {
     client: 'mysql',
@@ -26,7 +26,7 @@ module.exports = {
     connection: {
       host: '127.0.0.1',
       user: 'root',
-      password: '',
+      password: 'root',
       database: 'node_api'
     },
     migrations: {
