@@ -46,7 +46,7 @@ class Quizz {
     static getAllQuizzs(req, res) {
         knex('quizzs').then((quizz) => {
             if(quizz.length > 0) {
-                return res.status(200).json({quizz: quizz})
+                return res.status(200).json({quizzs: quizz})
             }
             else {
                 return res.status(404).json({errors: ['Aucun quizz n\'a été créé']});
@@ -118,37 +118,63 @@ class Quizz {
         if(!req.body.questions || req.body.questions.length === 0 || !Array.isArray(req.body.questions)) {
             errors.push("Veuillez entrer au moins une question");
         } else {
-
             for(let i = 0; i < req.body.questions.length; i++) {
                 if(!req.body.questions[i] || !req.body.questions[i].question) {
                     errors.push("Veuillez entrer une question");
                 }
-            }
+                if(!req.body.questions[i].responses || req.body.questions[i].responses.length === 0 || !Array.isArray(req.body.questions[i].responses)) {
+                    errors.push("Veuillez entrer au moins une réponse pour chaque question");
+                } else {
+                    for(let y = 0; y < req.body.questions[i].responses.length; y++) {
+                        if(!req.body.questions[i].responses[y] || !req.body.questions[i].responses[y].response) {
+                            errors.push("Veuillez entrer une réponse");
+                        }
 
+                        if(!(typeof req.body.questions[i].responses[y].isCorrect === 'boolean')) {
+                            errors.push("Veuillez préciser si la réponse est correcte");
+                        }
+                    }
+                }
+            }
         }
 
         if(errors.length > 0) {
-            return res.status(417).json({errors: errors})
+            return res.status(417).json({errors: errors});
         }
 
         knex('quizzs').insert({
             theme: req.body.theme
         }).then((quizz) => {
             if(quizz.length > 0) {
-                const questions = [];
                 for(let i = 0; i < req.body.questions.length; i++) {
-                    questions.push({
+                    const question = {
                         question: req.body.questions[i].question,
                         quizz_id: quizz[0]
-                    });
-                }
-                knex('questions').insert(questions).then((question) => {
-                    if(question.length > 0) {
-                        return res.status(201).json({message: 'Votre quizz a bien été enregistré.'})
-                    } else {
-                        return res.status(403).json({errors: ['Votre quizz n\'a pas pu être créé']});
                     }
-                });
+
+                    knex('questions').insert(question).then((question) => {
+                        if(question.length > 0) {
+                            for(let y = 0; y < req.body.questions[i].responses.length; y++) {
+                                const response = {
+                                    response: req.body.questions[i].responses[y].response,
+                                    isCorrect: req.body.questions[i].responses[y].isCorrect,
+                                    question_id: question[0]
+                                }
+
+                                knex('responses').insert(response).then((response) => {
+                                    if(response.length > 0) {
+                                        return res.status(200).json({message: 'Votre quizz a bien été créé'});
+                                    } else {
+                                        return res.status(403).json({errors: ['Votre quizz n\'a pas pu être créé']});
+                                    }
+                                });
+                            }
+                        } else {
+                            return res.status(403).json({errors: ['Votre quizz n\'a pas pu être créé']});
+                        }
+                    })
+
+                }
             } else {
                 return res.status(403).json({errors: ['Votre quizz n\'a pas pu être créé']});
             }
@@ -207,7 +233,7 @@ class Quizz {
                     });
                 }
 
-                return res.status(200).json(result);
+                return res.status(200).json({quizz: result});
             } else {
                 return res.status(404).json({errors: [`Aucun quizz trouvé pour cette id: ${req.params.id}`]});
             }

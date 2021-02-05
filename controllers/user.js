@@ -49,7 +49,7 @@ class User {
                             password: password
                         }).then((userId) => {
                             knex('users').where('id', userId[0]).then((user) => {
-                                return res.status(201).json(user[0]);
+                                return res.status(201).json({message: "Votre compte a bien été créé", user: user[0]});
                             });
                         });
                     } else {
@@ -88,8 +88,11 @@ class User {
                             jwt.sign({user: user[0].id, role: user[0].role}, 'secret', {expiresIn: '10h'}, (err, token) => {
                                 if(!err) {
                                     return res.status(200).json({
-                                        ... user[0],
-                                        token: token
+                                        message: "Connecté avec succès",
+                                        user: {
+                                            ... user[0],
+                                            token: token
+                                        }
                                     });
                                 } else {
                                     return res.status(417).json({errors: ["Connexion impossible"]});
@@ -155,7 +158,7 @@ class User {
                                         password: password
                                     }).then((userId) => {
                                         knex('users').where('id', req.params.id).then((user) => {
-                                            return res.status(201).json(user[0]);
+                                            return res.status(201).json({message: "Vos informations ont bien été modifiées", user: user[0]});
                                         });
                                     });
                                 } else {
@@ -195,7 +198,7 @@ class User {
                     knex('users').where({id: req.params.id}).then((user) => {
                         if(user.length > 0) {
                             knex('users').where({id: user[0].id}).delete().then((del) => {
-                                res.status(200).json(user[0]);
+                                res.status(200).json({message: "Votre compte a bien été supprimé", user: user[0]});
                             });
                         } else {
                             res.status(404).json({errors: ["L'utilisateur n'existe pas"]});

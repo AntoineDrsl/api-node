@@ -8,7 +8,7 @@ quizzRoute.get('/:id', Quizz.getQuizzById);
 quizzRoute.get('/:id/all', Quizz.getAllQuizzById);
 
 quizzRoute.post('/', Quizz.createQuizz);
-quizzRoute.post('/createAll', Quizz.createAllQuizz);
+quizzRoute.post('/all', Quizz.createAllQuizz);
 quizzRoute.put('/:id', Quizz.UpdateQuizzById);
 quizzRoute.delete('/:id', auth, Quizz.RemoveQuizzById);
 
