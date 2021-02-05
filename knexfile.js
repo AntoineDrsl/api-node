@@ -2,14 +2,14 @@
 
 const Path = require('path');
 
-module.exports.dbConfig = {
+module.exports = {
 
   development: {
     client: 'mysql',
     connection: {
       host: '127.0.0.1',
       user: 'root',
-      password: 'root',
+      password: '',
       database: 'node_api'
     },
     migrations: {

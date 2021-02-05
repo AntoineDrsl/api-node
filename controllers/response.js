@@ -1,6 +1,6 @@
-const {dbConfig} = require('../knexfile');
-const knex = require('knex')(dbConfig.development);
-
+const environment = 'development';
+const dbConfig = require('../knexfile')[environment];
+const knex = require('knex')(dbConfig);
 class Response {
 
     static createResponse(req, res) {
