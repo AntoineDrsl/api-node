@@ -6,23 +6,23 @@ const jwt = require('jsonwebtoken');
 class User {
 
     static register(req, res) {
-        const error = [];
+        const errors = [];
 
         // Check request
         if(!req.body.firstname) {
-            error.push("Veuillez entrer un prénom");
+            errors.push("Veuillez entrer un prénom");
         }
 
         if(!req.body.lastname) {
-            error.push("Veuillez entrer un nom");
+            errors.push("Veuillez entrer un nom");
         }
 
         if(!req.body.email) {
-            error.push("Veuillez entrer un email");
+            errors.push("Veuillez entrer un email");
         }
 
         if(!req.body.password) {
-            error.push("Veuillez entrer un mot de passe");
+            errors.push("Veuillez entrer un mot de passe");
         }
 
         if(!req.body.role) {
@@ -30,8 +30,8 @@ class User {
         }
 
         // Return errors
-        if(error.length > 0) {
-            return res.status(417).json({"errors": error});
+        if(errors.length > 0) {
+            return res.status(417).json({errors: errors});
         }
 
         knex('users').where('email', req.body.email).then((sameEmail) => {
@@ -51,31 +51,31 @@ class User {
                             });
                         });
                     } else {
-                        return res.status(417).json({"errors": ["Une erreur est survenue"]});
+                        return res.status(417).json({errors: ["Une erreur est survenue"]});
                     }
                 }, (err) => {
-                    return res.status(417).json({"errors": ["Une erreur est survenue"]});
+                    return res.status(417).json({errors: ["Une erreur est survenue"]});
                 });
             } else {
-                res.status(417).json({"errors": ["Cette adresse email est déjà utilisée"]});
+                res.status(417).json({errors: ["Cette adresse email est déjà utilisée"]});
             }
         });
     }
 
     static login(req, res) {
-        const error = [];
+        const errors = [];
 
         if(!req.body.email) {
-            error.push("Veuillez entrer un email");
+            errors.push("Veuillez entrer un email");
         }
 
         if(!req.body.password) {
-            error.push("Veuillez entrer un mot de passe");
+            errors.push("Veuillez entrer un mot de passe");
         }
 
         // Return errors
-        if(error.length > 0) {
-            return res.status(417).json({"errors": error});
+        if(errors.length > 0) {
+            return res.status(417).json({errors: errors});
         }
 
         knex('users').where({email: req.body.email}).then((user) => {
@@ -90,50 +90,50 @@ class User {
                                         token: token
                                     });
                                 } else {
-                                    return res.status(417).json({"errors": ["Connexion impossible"]});
+                                    return res.status(417).json({errors: ["Connexion impossible"]});
                                 }
                             });
                         } else {
-                            return res.status(417).json({"errors": ["Mauvais mot de passe"]});
+                            return res.status(417).json({errors: ["Mauvais mot de passe"]});
                         }
                     } else {
                         console.log(err);
-                        return res.status(417).json({"errors": ["Une erreur est survenue"]});
+                        return res.status(417).json({errors: ["Une erreur est survenue"]});
                     }
                 });
             } else {
-                return res.status(404).json({"errors": ["Cette adresse email ne fait pas partie de nos services"]});
+                return res.status(404).json({errors: ["Cette adresse email ne fait pas partie de nos services"]});
             }
         });
     }
 
     static async update(req, res) {
-        const error = [];
+        const errors = [];
 
         // Check request
         if(!req.params.id) {
-            error.push("Aucun utilisateur trouvé");
+            errors.push("Aucun utilisateur trouvé");
         }
 
         if(!req.body.firstname) {
-            error.push("Veuillez entrer un prénom");
+            errors.push("Veuillez entrer un prénom");
         }
 
         if(!req.body.lastname) {
-            error.push("Veuillez entrer un nom");
+            errors.push("Veuillez entrer un nom");
         }
 
         if(!req.body.email) {
-            error.push("Veuillez entrer un email");
+            errors.push("Veuillez entrer un email");
         }
 
         if(!req.body.password) {
-            error.push("Veuillez entrer un mot de passe");
+            errors.push("Veuillez entrer un mot de passe");
         }
 
         // Return errors
-        if(error.length > 0) {
-            return res.status(417).json({"errors": error});
+        if(errors.length > 0) {
+            return res.status(417).json({errors: errors});
         }
 
         jwt.verify(req.token, 'secret', (err, authData) => {
@@ -157,13 +157,13 @@ class User {
                                         });
                                     });
                                 } else {
-                                    return res.status(417).json({"errors": ["Une erreur est survenue"]});
+                                    return res.status(417).json({errors: ["Une erreur est survenue"]});
                                 }
                             }, (err) => {
-                                return res.status(417).json({"errors": ["Une erreur est survenue"]});
+                                return res.status(417).json({errors: ["Une erreur est survenue"]});
                             });
                         } else {
-                            res.status(417).json({"errors": ["Cette adresse email est déjà utilisée"]});
+                            res.status(417).json({errors: ["Cette adresse email est déjà utilisée"]});
                         }
                     });
                 } else {
@@ -174,15 +174,15 @@ class User {
     }
 
     static destroy(req, res) {
-        const error = [];
+        const errors = [];
 
         if(!req.params.id) {
-            error.push("Aucun utilisateur trouvé");
+            errors.push("Aucun utilisateur trouvé");
         }
 
         // Return errors
-        if(error.length > 0) {
-            return res.status(417).json({"errors": error});
+        if(errors.length > 0) {
+            return res.status(417).json({errors: errors});
         }
 
         jwt.verify(req.token, 'secret', (err, authData) => {
@@ -196,7 +196,7 @@ class User {
                                 res.status(200).json(user[0]);
                             });
                         } else {
-                            res.status(404).json({"errors": ["L'utilisateur n'existe pas"]});
+                            res.status(404).json({errors: ["L'utilisateur n'existe pas"]});
                         }
                     });
                 } else {
