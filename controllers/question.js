@@ -67,12 +67,19 @@ class Question {
     }
 
     static RemoveQuestionById(req, res) {
-
         knex('questions').where({id: req.params.id})
-        .del()
-        .then(() => {
-            return res.status(200).json({status: true, message: 'La question a bien été supprimé'});
-        });
+        .then((question) => {
+            if(question.length > 0) {
+                knex('questions').where({id: req.params.id})
+                .del()
+                .then(() => {
+                    return res.status(200).json({status: true, message: 'La question a bien été supprimé'});
+                });
+            }
+            else {
+                return res.status(404).json({message: 'Impossible de retourner la question'});
+            }
+        })
     }
 
     static getQuestionById(req, res) {
