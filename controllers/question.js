@@ -85,7 +85,7 @@ class Question {
             if(question) {
                 return res.status(200).json({question: question});
             }
-        })
+        });
     }
 }
 
