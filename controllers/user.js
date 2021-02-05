@@ -27,6 +27,10 @@ class User {
             errors.push("Veuillez entrer un mot de passe");
         }
 
+        if(req.body.role) {
+            errors.push("Le role ne peut pas être rempli manuellement");
+        }
+
         // Return errors
         if(errors.length > 0) {
             return res.status(417).json({errors: errors});
