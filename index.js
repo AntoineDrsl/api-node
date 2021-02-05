@@ -11,6 +11,7 @@ const userRoute = require('./routes/user.route');
 const quizzRoute = require('./routes/quizz.route');
 const responseRoute = require('./routes/response.route');
 
+
 app.use('/question', questionRoute);
 app.use('/response', responseRoute);
 app.use('/user', userRoute);

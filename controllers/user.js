@@ -1,7 +1,9 @@
-const {dbConfig} = require('../knexfile');
-const knex = require('knex')(dbConfig.development);
+const environment = 'development';
+const dbConfig = require('../knexfile')[environment];
+const knex = require('knex')(dbConfig);
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+
 
 class User {
 
@@ -25,10 +27,6 @@ class User {
             errors.push("Veuillez entrer un mot de passe");
         }
 
-        if(!req.body.role) {
-            error.push("Veuillez entrer un role");
-        }
-
         // Return errors
         if(errors.length > 0) {
             return res.status(417).json({errors: errors});
@@ -43,7 +41,7 @@ class User {
                             firstname: req.body.firstname,
                             lastname: req.body.lastname,
                             email: req.body.email,
-                            role: req.body.role,
+                            role: 'user',
                             password: password
                         }).then((userId) => {
                             knex('users').where('id', userId[0]).then((user) => {
