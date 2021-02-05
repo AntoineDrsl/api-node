@@ -6,7 +6,7 @@ exports.up = function(knex) {
         table.string("response").notNullable();
         table.boolean("isCorrect").notNullable();
 
-        table.foreign("question_id").references("id").inTable("questions");
+        table.foreign("question_id").references("id").inTable("questions").onDelete('CASCADE');
     });
 };
 

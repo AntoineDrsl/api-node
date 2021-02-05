@@ -5,7 +5,7 @@ exports.up = function(knex) {
         table.integer("quizz_id").unsigned().notNullable();
         table.string("question").notNullable();
 
-        table.foreign("quizz_id").references("id").inTable("quizzs");
+        table.foreign("quizz_id").references("id").inTable("quizzs").onDelete('CASCADE');
     });
 };
 
