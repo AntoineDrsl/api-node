@@ -5,14 +5,14 @@ class Quizz {
 
     static createQuizz(req, res) {
 
-        const error = [];
+        const errors = [];
 
         if(!req.body.theme || req.body.theme.length === 0) {
-            error.push("Veuillez entrer un nom de theme valide");
+            errors.push("Veuillez entrer un nom de theme valide");
         }
 
-        if(error.length > 0) {
-            return res.status(417).json({errors: error})
+        if(errors.length > 0) {
+            return res.status(417).json({errors: errors})
         }
 
         knex('quizzs').insert({
@@ -23,7 +23,7 @@ class Quizz {
                     return res.status(200).json({message: "Le quizz a bien été créé", quizz: quizz[0]})
                 });
             } else {
-                return res.status(403).json({message: 'Votre quizz n\'a pas pu être créé'});
+                return res.status(403).json({errors: ['Votre quizz n\'a pas pu être créé']});
             }
         });
     }
@@ -32,7 +32,7 @@ class Quizz {
         knex('quizzs').where({id: req.params.id})
         .then((quizz) => {
             if(quizz.length === 0) {
-                return res.status(404).json({message: `Aucun quizz trouvé pour cette id: ${req.params.id}`});
+                return res.status(404).json({errors: [`Aucun quizz trouvé pour cette id: ${req.params.id}`]});
             }
             if(quizz) {
                 return res.status(200).json({quizz: quizz});
@@ -46,20 +46,20 @@ class Quizz {
                 return res.status(200).json({quizz: quizz})
             }
             else {
-                return res.status(404).json({message: 'Aucun quizz n\'a été créé'});
+                return res.status(404).json({errors: ['Aucun quizz n\'a été créé']});
             }
         })
     }
 
     static UpdateQuizzById(req, res) {
-        const error = [];
+        const errors = [];
 
         if(!req.body.theme || req.body.theme.length === 0) {
-            error.push("Veuillez entrer un nom de theme valide");
+            errors.push("Veuillez entrer un nom de theme valide");
         }
 
-        if(error.length > 0) {
-            return res.status(417).json({errors: error})
+        if(errors.length > 0) {
+            return res.status(417).json({errors: errors})
         }
 
 
@@ -71,44 +71,48 @@ class Quizz {
                     return res.status(200).json({message: "Le quizz a bien été modifié", quizz: quizz[0]})
                 });
             } else {
-                return res.status(404).json({message: 'Aucun quizz n\'a été modifié'});
+                return res.status(404).json({errors: ['Aucun quizz n\'a été modifié']});
             }
         })
     }
 
     static RemoveQuizzById(req, res) {
         knex('quizzs').where({id: req.params.id}).then((quizz) => {
-            knex('quizzs').where({id: req.params.id})
-            .del()
-            .then(() => {
-                return res.status(200).json({message: 'Le quizz a bien été supprimé', quizz: quizz[0]});
-            });
+            if(quizz[0]) { 
+                knex('quizzs').where({id: req.params.id})
+                .del()
+                .then(() => {
+                    return res.status(200).json({message: 'Le quizz a bien été supprimé', quizz: quizz[0]});
+                });
+            } else {
+                return res.status(404).json({errors: ["Le quizz demandé n'a pas été trouvé"]});
+            }
         });
     }
 
     // All quizz
 
     static createAllQuizz(req, res) {
-        const error = [];
+        const errors = [];
 
         if(!req.body.theme || req.body.theme.length === 0) {
-            error.push("Veuillez entrer un nom de theme valide");
+            errors.push("Veuillez entrer un nom de theme valide");
         }
 
         if(!req.body.questions || req.body.questions.length === 0 || !Array.isArray(req.body.questions)) {
-            error.push("Veuillez entrer au moins une question");
+            errors.push("Veuillez entrer au moins une question");
         } else {
 
             for(let i = 0; i < req.body.questions.length; i++) {
                 if(!req.body.questions[i] || !req.body.questions[i].question) {
-                    error.push("Veuillez entrer une question");
+                    errors.push("Veuillez entrer une question");
                 }
             }
 
         }
 
-        if(error.length > 0) {
-            return res.status(417).json({errors: error})
+        if(errors.length > 0) {
+            return res.status(417).json({errors: errors})
         }
 
         knex('quizzs').insert({
@@ -126,11 +130,11 @@ class Quizz {
                     if(question.length > 0) {
                         return res.status(201).json({message: 'Votre quizz a bien été enregistré.'})
                     } else {
-                        return res.status(403).json({message: 'Votre quizz n\'a pas pu être créé'});
+                        return res.status(403).json({errors: ['Votre quizz n\'a pas pu être créé']});
                     }
                 });
             } else {
-                return res.status(403).json({message: 'Votre quizz n\'a pas pu être créé'});
+                return res.status(403).json({errors: ['Votre quizz n\'a pas pu être créé']});
             }
         });
     }
@@ -189,7 +193,7 @@ class Quizz {
 
                 return res.status(200).json(result);
             } else {
-                return res.status(404).json({message: `Aucun quizz trouvé pour cette id: ${req.params.id}`});
+                return res.status(404).json({errors: [`Aucun quizz trouvé pour cette id: ${req.params.id}`]});
             }
         });
     }
