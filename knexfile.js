@@ -2,7 +2,7 @@
 
 const Path = require('path');
 
-module.exports.dbConfig = {
+module.exports = {
 
   development: {
     client: 'mysql',
