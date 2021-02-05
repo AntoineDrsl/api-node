@@ -26,7 +26,7 @@ module.exports.dbConfig = {
     connection: {
       host: '127.0.0.1',
       user: 'root',
-      password: '',
+      password: 'root',
       database: 'node_api'
     },
     migrations: {
