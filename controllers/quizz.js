@@ -1,5 +1,6 @@
 const {dbConfig} = require('../knexfile');
 const knex = require('knex')(dbConfig.development);
+const jwt = require('jsonwebtoken');
 
 class Quizz {
 
@@ -77,13 +78,25 @@ class Quizz {
     }
 
     static RemoveQuizzById(req, res) {
-        knex('quizzs').where({id: req.params.id}).then((quizz) => {
-            knex('quizzs').where({id: req.params.id})
-            .del()
-            .then(() => {
-                return res.status(200).json({message: 'Le quizz a bien été supprimé', quizz: quizz[0]});
-            });
+
+        jwt.verify(req.token, 'secret', (err, authData) => {
+            if(err) {
+                res.sendStatus(403);
+            } else {
+                if(authData.role === 'admin') {
+                    knex('quizzs').where({id: req.params.id}).then((quizz) => {
+                        knex('quizzs').where({id: req.params.id})
+                        .del()
+                        .then(() => {
+                            return res.status(200).json({message: 'Le quizz a bien été supprimé', quizz: quizz[0]});
+                        });
+                    });
+                } else {
+                    res.sendStatus(403);
+                }
+            }
         });
+
     }
 
     // All quizz

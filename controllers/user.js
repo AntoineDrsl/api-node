@@ -25,6 +25,10 @@ class User {
             error.push("Veuillez entrer un mot de passe");
         }
 
+        if(!req.body.role) {
+            error.push("Veuillez entrer un role");
+        }
+
         // Return errors
         if(error.length > 0) {
             return res.status(417).json({"errors": error});
@@ -39,6 +43,7 @@ class User {
                             firstname: req.body.firstname,
                             lastname: req.body.lastname,
                             email: req.body.email,
+                            role: req.body.role,
                             password: password
                         }).then((userId) => {
                             knex('users').where('id', userId[0]).then((user) => {
@@ -78,7 +83,7 @@ class User {
                 bcrypt.compare(req.body.password, user[0].password, (err, same) => {
                     if(!err) {
                         if(same) {
-                            jwt.sign({user: user[0].id}, 'secret', {expiresIn: '10h'}, (err, token) => {
+                            jwt.sign({user: user[0].id, role: user[0].role}, 'secret', {expiresIn: '10h'}, (err, token) => {
                                 if(!err) {
                                     return res.status(200).json({
                                         ... user[0],
